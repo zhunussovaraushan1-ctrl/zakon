@@ -27,6 +27,16 @@ pytest -q                           # тесты
 curl -X POST http://localhost:8000/api/collect -H "X-Admin-Token: $ZW_ADMIN_TOKEN"
 ```
 
+## Публикация в интернете (Render)
+
+В репозитории есть `render.yaml`. Откройте
+https://render.com/deploy?repo=https://github.com/zhunussovaraushan1-ctrl/zakon,
+войдите в Render через GitHub и нажмите **Deploy Blueprint**. `ANTHROPIC_API_KEY` можно ввести там же или оставить пустым.
+Токен `ZW_ADMIN_TOKEN` Render сгенерирует сам (виден в настройках сервиса → Environment).
+
+Ограничения бесплатного тарифа: сервис засыпает после 15 минут без запросов (первое открытие ~1 минута),
+а файл SQLite стирается при каждом перезапуске — для постоянного хранения нужен платный диск или PostgreSQL.
+
 ## Настройки (переменные окружения)
 
 | Переменная | По умолчанию | Назначение |

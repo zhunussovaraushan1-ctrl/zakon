@@ -1,0 +1,20 @@
+# Деплой ZanWatch на Render (Blueprint): https://render.com/deploy?repo=https://github.com/zhunussovaraushan1-ctrl/zakon
+services:
+  - type: web
+    name: zanwatch
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/meta
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: ZW_ADMIN_TOKEN
+        generateValue: true
+      - key: ANTHROPIC_API_KEY
+        sync: false          # вводится вручную при деплое; можно оставить пустым — тогда сводки по правилам
+      - key: ZW_COLLECT_INTERVAL_HOURS
+        value: "12"
+      - key: ZW_SEED_DEMO
+        value: "1"

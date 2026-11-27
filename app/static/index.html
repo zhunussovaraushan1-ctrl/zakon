@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZanWatch</title>
+<meta name="description" content="Изменения законодательства РК по бухучёту, налогам, зарплате, страхованию и аудиту — коротко и с действиями">
+<meta name="theme-color" content="#0f5c4d">
+<link rel="manifest" href="/static/manifest.webmanifest">
+<link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/static/icon.svg">
+<style>
+:root{
+  --bg:#f4f5f2;--surface:#fff;--text:#1b1f1d;--muted:#5f6763;--line:#e2e5e1;
+  --brand:#0f5c4d;--brand-soft:#e3efeb;
+  --high:#b42318;--high-soft:#fdecea;--med:#a15c07;--med-soft:#fdf3e1;--low:#476072;--low-soft:#eaf0f4;
+  --demo:#6941c6;--demo-soft:#f1ecfb;--radius:14px;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#111413;--surface:#1b201e;--text:#e9ecea;--muted:#9aa39e;--line:#2b322f;
+  --brand:#5fc4ad;--brand-soft:#1d332d;
+  --high:#ff8a80;--high-soft:#3a1d1b;--med:#f5b759;--med-soft:#352a17;--low:#9cb6c9;--low-soft:#1d2830;
+  --demo:#b8a3f0;--demo-soft:#2a2340;
+}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+button,input{font:inherit;color:inherit}
+a{color:var(--brand)}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px calc(84px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 8px}
+.top{display:flex;align-items:center;gap:10px}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--brand);margin-right:auto}
+.role-btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+.search{margin-top:10px;width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer;white-space:nowrap}
+.chip[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:#fff}
+@media (prefers-color-scheme:dark){.chip[aria-pressed=true]{color:#0b1412}}
+.banner{background:var(--demo-soft);color:var(--demo);border-radius:12px;padding:10px 14px;font-size:14px;margin:8px 0}
+.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 8px}
+.card{display:block;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:10px;text-decoration:none;color:inherit;cursor:pointer}
+.card:active{transform:scale(.995)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.tag{font-size:12px;font-weight:600;border-radius:6px;padding:2px 8px;background:var(--brand-soft);color:var(--brand)}
+.imp-high{background:var(--high-soft);color:var(--high)}.imp-medium{background:var(--med-soft);color:var(--med)}.imp-low{background:var(--low-soft);color:var(--low)}
+.tag-demo{background:var(--demo-soft);color:var(--demo)}
+.tag-review{background:var(--med-soft);color:var(--med)}
+.card h3{margin:2px 0 4px;font-size:17px;line-height:1.3}
+.clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--muted);font-size:14px;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;color:var(--muted);margin-top:8px}
+.countdown{font-weight:600;color:var(--text)}
+.countdown.soon{color:var(--high)}
+.empty{text-align:center;color:var(--muted);padding:40px 16px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs a{flex:1;max-width:240px;text-align:center;padding:10px 0 12px;text-decoration:none;color:var(--muted);font-size:13px;font-weight:600}
+nav.tabs a svg{display:block;margin:0 auto 2px;width:22px;height:22px}
+nav.tabs a[aria-current=page]{color:var(--brand)}
+/* документ */
+.back{border:0;background:none;color:var(--brand);padding:8px 0;cursor:pointer;font-weight:600}
+.doc h1{font-size:22px;line-height:1.25;margin:6px 0 4px}
+.doc .official{color:var(--muted);font-size:14px;margin:0 0 12px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.box h2{font-size:15px;margin:0 0 8px}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
+.facts dt{color:var(--muted)}.facts dd{margin:0}
+.change{border-top:1px solid var(--line);padding:10px 0}
+.change:first-of-type{border-top:0;padding-top:0}
+.change .where{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.was,.became{border-radius:8px;padding:8px 10px;font-size:14px;margin:4px 0}
+.was{background:var(--high-soft)}.became{background:var(--brand-soft)}
+.was b,.became b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;opacity:.75}
+.action{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}
+.action:first-of-type{border-top:0}
+.action input{width:20px;height:20px;margin-top:2px;accent-color:var(--brand);flex:none}
+.action.done .txt{text-decoration:line-through;color:var(--muted)}
+.action .sub{font-size:13px;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 14px;cursor:pointer;text-decoration:none;color:var(--text);font-weight:600;font-size:15px}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+@media (prefers-color-scheme:dark){.btn.primary{color:#0b1412}}
+.disclaimer{font-size:13px;color:var(--muted);border-left:3px solid var(--med);padding:4px 10px;margin:12px 0}
+/* сроки */
+.dl{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;margin-bottom:8px}
+.dl.soon{border-color:var(--high);background:var(--high-soft)}
+.dl .date{flex:none;width:64px;text-align:center;font-weight:700}
+.dl .date small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.dl .txt{flex:1}
+.dl .doc-link{font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline}
+/* выбор роли */
+.modal{position:fixed;inset:0;z-index:10;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}
+@media (min-width:600px){.modal{align-items:center}.sheet{border-radius:20px}}
+.sheet h2{margin:0 0 4px}.sheet p{margin:0 0 14px;color:var(--muted)}
+.role-opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+.role-opt b{display:block}.role-opt span{font-size:14px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 14px;border-radius:10px;font-size:14px;z-index:20}
+.offline{background:var(--med-soft);color:var(--med);border-radius:12px;padding:8px 14px;font-size:14px;margin:8px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header id="hdr">
+    <div class="top">
+      <div class="logo">ZanWatch</div>
+      <button class="role-btn" id="roleBtn" type="button">Роль</button>
+    </div>
+    <div id="filters">
+      <input class="search" id="q" type="search" placeholder="Поиск по сводкам" autocomplete="off">
+      <div class="chips" id="chips" role="group" aria-label="Сферы"></div>
+    </div>
+  </header>
+  <main id="view"></main>
+</div>
+
+<nav class="tabs" aria-label="Разделы">
+  <a href="#/" data-tab="feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Лента</a>
+  <a href="#/deadlines" data-tab="deadlines"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Сроки</a>
+  <a href="#/favorites" data-tab="favorites"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17.3 6.2 21l1.6-6.6L2.7 9.9l6.7-.6L12 3l2.6 6.3 6.7.6-5.1 4.5 1.6 6.6z"/></svg>Избранное</a>
+</nav>
+
+<script>
+"use strict";
+const ROLES = {all:"Все роли", accountant:"Бухгалтер", lawyer:"Юрист", insurer:"Страховщик"};
+const ROLE_HINT = {
+  accountant:"Формы отчётности, ставки, план счетов, сроки, ЭСФ",
+  lawyer:"Законы, договоры и правила, правовые риски",
+  insurer:"Пруденциальные нормативы, резервы, ОГПО, требования АРРФР",
+  all:"Показывать всё"
+};
+const IMP = {high:"Важно", medium:"Средне", low:"Справочно"};
+const KIND = {npa:"НПА", explanation:"Разъяснение", news:"Обзор"};
+
+// ---------- хранение на устройстве (U6, U8, конфиденциальность) ----------
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); }catch{ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch{} }
+};
+const state = {
+  role: store.get("zw_role", null),
+  sphere: null,
+  q: "",
+  meta: null,
+  items: [],
+  offline: false,
+  fav: new Set(store.get("zw_fav", [])),
+  done: new Set(store.get("zw_done", [])),
+};
+const saveFav = () => store.set("zw_fav", [...state.fav]);
+const saveDone = () => store.set("zw_done", [...state.done]);
+
+// ---------- утилиты ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const MONTHS = ["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
+function fmtDate(iso){ if(!iso) return ""; const [y,m,d] = iso.slice(0,10).split("-").map(Number); return `${d} ${MONTHS[m-1]} ${y}`; }
+function daysTo(iso){
+  if(!iso) return null;
+  const [y,m,d] = iso.slice(0,10).split("-").map(Number);
+  const t = new Date(); t.setHours(0,0,0,0);
+  return Math.round((new Date(y, m-1, d) - t) / 86400000);
+}
+function plural(n, a, b, c){ n = Math.abs(n) % 100; const n1 = n % 10; if(n > 10 && n < 20) return c; if(n1 > 1 && n1 < 5) return b; if(n1 === 1) return a; return c; }
+function countdown(iso){
+  const n = daysTo(iso); if(n === null) return "";
+  if(n > 0) return `через ${n} ${plural(n,"день","дня","дней")}`;
+  if(n === 0) return "сегодня";
+  return "уже действует";
+}
+function toast(msg){ const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.append(t); setTimeout(() => t.remove(), 2200); }
+const actionKey = (id, i) => `${id}:${i}`;
+
+// ---------- данные (U10: офлайн — последняя загруженная лента) ----------
+async function api(path){
+  const r = await fetch(path, {headers:{Accept:"application/json"}});
+  if(!r.ok) throw new Error(r.status);
+  return r.json();
+}
+async function loadMeta(){
+  try{ state.meta = await api("/api/meta"); store.set("zw_meta", state.meta); }
+  catch{ state.meta = store.get("zw_meta", {spheres:{}, audiences:{}, sources:{}, demo:false}); }
+}
+async function loadFeed(){
+  // Тянем всю ленту роли один раз: фильтр по сферам и поиск — на устройстве, мгновенно и офлайн
+  const p = new URLSearchParams({limit:"200"});
+  if(state.role && state.role !== "all") p.set("audience", state.role);
+  try{
+    const data = await api("/api/updates?" + p);
+    state.items = data.items; state.offline = false;
+    store.set("zw_feed_" + (state.role || "all"), data.items);
+  }catch{
+    state.items = store.get("zw_feed_" + (state.role || "all"), []);
+    state.offline = true;
+  }
+}
+async function loadOne(id){
+  const cached = state.items.find(u => u.id === id);
+  try{ return await api("/api/updates/" + id); }
+  catch{ return cached || null; }
+}
+function matches(u){
+  if(state.sphere && !u.spheres.includes(state.sphere)) return false;
+  if(state.q){
+    const blob = [u.title, u.doc_title, u.summary, ...u.changes.map(c => `${c.where} ${c.was} ${c.became}`), ...u.actions.map(a => a.text)].join(" ").toLowerCase();
+    if(!blob.includes(state.q.toLowerCase())) return false;
+  }
+  return true;
+}
+
+// ---------- отрисовка ----------
+function tagsHtml(u){
+  const sp = state.meta?.spheres || {};
+  let h = `<span class="tag imp-${u.importance}">${IMP[u.importance]}</span>`;
+  if(u.is_demo) h += `<span class="tag tag-demo">Демо</span>`;
+  if(!u.source_official) h += `<span class="tag tag-review">Обзор</span>`;
+  for(const s of u.spheres) h += `<span class="tag">${esc(sp[s] || s)}</span>`;
+  return h;
+}
+function cardHtml(u){
+  const n = daysTo(u.effective_date);
+  const cd = u.effective_date
+    ? `<span>В силу: ${fmtDate(u.effective_date)} · <span class="countdown ${n !== null && n >= 0 && n <= 14 ? "soon" : ""}">${countdown(u.effective_date)}</span></span>` : "";
+  return `<a class="card" href="#/doc/${u.id}">
+    <div class="tags">${tagsHtml(u)}</div>
+    <h3>${esc(u.title)}</h3>
+    <p class="clamp">${esc(u.summary)}</p>
+    <div class="meta"><span>${esc(u.source_name)}</span>${u.published_at ? `<span>${fmtDate(u.published_at)}</span>` : ""}${cd}</div>
+  </a>`;
+}
+function bannerHtml(list){
+  let h = "";
+  if(state.offline) h += `<div class="offline">Нет связи — показана последняя загруженная лента.</div>`;
+  if(list.some(u => u.is_demo)) h += `<div class="banner">Демо-режим: карточки с меткой «Демо» показывают формат и не являются реальными нормами.</div>`;
+  return h;
+}
+
+function renderChips(){
+  const sp = state.meta?.spheres || {};
+  const all = [[null, "Все сферы"], ...Object.entries(sp)];
+  $("#chips").innerHTML = all.map(([k, v]) => `<button class="chip" type="button" data-s="${k ?? ""}" aria-pressed="${state.sphere === k}">${esc(v)}</button>`).join("");
+}
+
+function renderFeed(){
+  const list = state.items.filter(matches);
+  const high = list.filter(u => u.importance === "high");
+  const rest = list.filter(u => u.importance !== "high");
+  let h = bannerHtml(list);
+  if(!list.length){ h += `<div class="empty">${state.items.length ? "Ничего не найдено. Измените фильтр или запрос." : "Пока нет изменений. Загляните позже."}</div>`; }
+  if(high.length) h += `<div class="section-title">Требует действий · ${high.length}</div>` + high.map(cardHtml).join("");
+  if(rest.length) h += `<div class="section-title">Остальные изменения</div>` + rest.map(cardHtml).join("");
+  if(state.meta?.last_collect) h += `<p class="meta" style="justify-content:center">Последний сбор: ${fmtDate(state.meta.last_collect)}</p>`;
+  $("#view").innerHTML = h;
+}
+
+function renderFavorites(){
+  const list = state.items.filter(u => state.fav.has(u.id));
+  $("#view").innerHTML = `<div class="section-title">Избранное</div>` +
+    (list.length ? list.map(cardHtml).join("") : `<div class="empty">Отмечайте важные изменения звёздочкой на экране документа.</div>`);
+}
+
+function renderDeadlines(){
+  const tasks = [];
+  for(const u of state.items){
+    u.actions.forEach((a, i) => {
+      if(state.done.has(actionKey(u.id, i))) return;
+      if(state.role && state.role !== "all" && a.who && a.who !== state.role) return;
+      tasks.push({u, a, i, date: a.deadline || u.effective_date || ""});
+    });
+  }
+  tasks.sort((x, y) => (x.date || "9999") < (y.date || "9999") ? -1 : (x.date || "9999") > (y.date || "9999") ? 1 : 0);
+  let h = `<div class="section-title">Невыполненные задачи · ${tasks.length}</div>`;
+  if(!tasks.length) h += `<div class="empty">Все задачи выполнены или сроков пока нет.</div>`;
+  for(const t of tasks){
+    const n = daysTo(t.date);
+    const soon = n !== null && n <= 14;
+    const [, m, d] = t.date ? t.date.split("-").map(Number) : [];
+    h += `<div class="dl ${soon ? "soon" : ""}">
+      <div class="date">${t.date ? `${d} ${MONTHS[m-1]}<small>${countdown(t.date)}</small>` : `—<small>без срока</small>`}</div>
+      <div class="txt">
+        <label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" data-done="${actionKey(t.u.id, t.i)}" style="width:18px;height:18px;margin-top:3px;accent-color:var(--brand)"> <span>${esc(t.a.text)}${t.u.is_demo ? ' <span class="tag tag-demo">Демо</span>' : ""}</span></label>
+        <a class="doc-link" href="#/doc/${t.u.id}">${esc(t.u.title)}</a>
+      </div></div>`;
+  }
+  $("#view").innerHTML = h;
+}
+
+async function renderDoc(id){
+  $("#view").innerHTML = `<div class="empty">Загрузка…</div>`;
+  const u = await loadOne(id);
+  if(!u){ $("#view").innerHTML = `<button class="back" onclick="history.back()">← Назад</button><div class="empty">Карточка недоступна офлайн.</div>`; return; }
+  const src = state.meta?.sources?.[u.source];
+  const prepared = u.ai_model === "rules" ? "по правилам, без ИИ" : u.ai_model === "demo" ? "демо-пример" : `ИИ (${esc(u.ai_model)})`;
+  const changes = u.changes.length ? u.changes.map(c => `<div class="change">
+      ${c.where ? `<div class="where">${esc(c.where)}</div>` : ""}
+      ${c.was ? `<div class="was"><b>Было</b>${esc(c.was)}</div>` : ""}
+      <div class="became"><b>Стало</b>${esc(c.became)}</div></div>`).join("")
+    : `<p class="clamp" style="-webkit-line-clamp:unset">Конкретные правки не выделены — смотрите первоисточник.</p>`;
+  const actions = u.actions.length ? u.actions.map((a, i) => {
+      const k = actionKey(u.id, i), done = state.done.has(k);
+      return `<label class="action ${done ? "done" : ""}"><input type="checkbox" data-done="${k}" ${done ? "checked" : ""}>
+        <span><span class="txt">${esc(a.text)}</span><br><span class="sub">${a.deadline ? `до ${fmtDate(a.deadline)} · ${countdown(a.deadline)}` : "без срока"}${a.who ? ` · ${esc(ROLES[a.who] || a.who)}` : ""}</span></span></label>`;
+    }).join("")
+    : `<p class="clamp" style="-webkit-line-clamp:unset">Новых обязанностей не выявлено.</p>`;
+  const fav = state.fav.has(u.id);
+  $("#view").innerHTML = `<article class="doc">
+    <button class="back" type="button" id="backBtn">← Назад</button>
+    ${u.is_demo ? `<div class="banner">Это демо-карточка: она показывает формат и не описывает реальную норму.</div>` : ""}
+    <div class="tags">${tagsHtml(u)}<span class="tag">${KIND[u.doc_kind] || ""}</span></div>
+    <h1>${esc(u.title)}</h1>
+    <p class="official">${esc(u.doc_title)}</p>
+    <div class="box"><h2>Суть</h2><p style="margin:0">${esc(u.summary)}</p></div>
+    <div class="box"><dl class="facts">
+      <dt>Вступает в силу</dt><dd>${u.effective_date ? `${fmtDate(u.effective_date)} · ${countdown(u.effective_date)}` : "не указано"}</dd>
+      <dt>Опубликовано</dt><dd>${u.published_at ? fmtDate(u.published_at) : "—"}</dd>
+      <dt>Источник</dt><dd>${esc(u.source_name)}${src && !src.official ? " (неофициальный)" : ""}</dd>
+      <dt>Подготовлено</dt><dd>${prepared}</dd>
+    </dl></div>
+    ${!u.source_official ? `<div class="disclaimer">Это обзор неофициального источника. Сверяйтесь с текстом НПА.</div>` : ""}
+    <div class="box"><h2>Было → стало</h2>${changes}</div>
+    <div class="box"><h2>Что нужно сделать</h2>${actions}</div>
+    <div class="btns">
+      <a class="btn primary" href="${esc(u.url)}" target="_blank" rel="noopener">Открыть первоисточник</a>
+      <button class="btn" type="button" id="favBtn" aria-pressed="${fav}">${fav ? "★ В избранном" : "☆ В избранное"}</button>
+      <button class="btn" type="button" id="shareBtn">Поделиться</button>
+    </div>
+    <div class="disclaimer">Сводка подготовлена автоматически, сверяйтесь с первоисточником.</div>
+  </article>`;
+  $("#backBtn").onclick = () => history.length > 1 ? history.back() : (location.hash = "#/");
+  $("#favBtn").onclick = e => {
+    state.fav.has(u.id) ? state.fav.delete(u.id) : state.fav.add(u.id); saveFav();
+    const on = state.fav.has(u.id); e.target.textContent = on ? "★ В избранном" : "☆ В избранное"; e.target.setAttribute("aria-pressed", on);
+  };
+  $("#shareBtn").onclick = () => share(u);
+}
+
+// U9: системное меню или копирование текста
+async function share(u){
+  const lines = [u.title, "", u.summary];
+  if(u.changes.length){ lines.push("", "Было → стало:"); u.changes.forEach(c => lines.push(`• ${c.where ? c.where + ": " : ""}${c.was ? c.was + " → " : ""}${c.became}`)); }
+  if(u.actions.length){ lines.push("", "Что сделать:"); u.actions.forEach(a => lines.push(`• ${a.text}${a.deadline ? " (до " + fmtDate(a.deadline) + ")" : ""}`)); }
+  lines.push("", "Первоисточник: " + u.url, "Сводка подготовлена автоматически, сверяйтесь с первоисточником.");
+  const text = lines.join("\n");
+  if(navigator.share){ try{ await navigator.share({title:u.title, text, url:u.url}); return; }catch(e){ if(e.name === "AbortError") return; } }
+  try{ await navigator.clipboard.writeText(text); toast("Текст скопирован"); }
+  catch{ toast("Не удалось скопировать"); }
+}
+
+// ---------- выбор роли (U2) ----------
+function openRolePicker(){
+  const m = document.createElement("div");
+  m.className = "modal";
+  m.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rt">
+    <h2 id="rt">Кто вы?</h2><p>Лента покажет изменения, важные для вашей роли. Выбор можно поменять в любой момент.</p>
+    ${Object.entries(ROLES).filter(([k]) => k !== "all").concat([["all", ROLES.all]]).map(([k, v]) => `<button class="role-opt" type="button" data-role="${k}"><b>${v}</b><span>${ROLE_HINT[k]}</span></button>`).join("")}
+  </div>`;
+  m.addEventListener("click", async e => {
+    const b = e.target.closest("[data-role]");
+    if(!b){ if(e.target === m && state.role) m.remove(); return; }
+    state.role = b.dataset.role; store.set("zw_role", state.role); m.remove();
+    updateRoleBtn(); await loadFeed(); route();
+  });
+  document.body.append(m);
+}
+function updateRoleBtn(){ $("#roleBtn").textContent = ROLES[state.role || "all"] + " ▾"; }
+
+// ---------- маршрутизация ----------
+function route(){
+  const h = location.hash || "#/";
+  const tab = h.startsWith("#/deadlines") ? "deadlines" : h.startsWith("#/favorites") ? "favorites" : h.startsWith("#/doc/") ? "doc" : "feed";
+  document.querySelectorAll("nav.tabs a").forEach(a => {
+    if(a.dataset.tab === tab) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  $("#filters").style.display = tab === "feed" ? "" : "none";
+  if(tab === "doc") renderDoc(Number(h.split("/")[2]));
+  else if(tab === "deadlines") renderDeadlines();
+  else if(tab === "favorites") renderFavorites();
+  else renderFeed();
+  if(tab !== "doc") window.scrollTo(0, 0);
+}
+
+// ---------- события ----------
+$("#roleBtn").onclick = openRolePicker;
+$("#chips").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if(!b) return;
+  state.sphere = b.dataset.s || null; renderChips(); renderFeed();
+});
+let qTimer; $("#q").addEventListener("input", e => { clearTimeout(qTimer); qTimer = setTimeout(() => { state.q = e.target.value.trim(); renderFeed(); }, 150); });
+document.addEventListener("change", e => {
+  const k = e.target.dataset?.done; if(!k) return;
+  e.target.checked ? state.done.add(k) : state.done.delete(k); saveDone();
+  const row = e.target.closest(".action"); if(row) row.classList.toggle("done", e.target.checked);
+  if((location.hash || "").startsWith("#/deadlines")) setTimeout(renderDeadlines, 250);
+});
+window.addEventListener("hashchange", route);
+
+(async function init(){
+  updateRoleBtn();
+  await loadMeta();
+  renderChips();
+  await loadFeed();
+  route();
+  if(!state.role) openRolePicker();
+  if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
+})();
+</script>
+</body>
+</html>

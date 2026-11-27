@@ -1,0 +1,14 @@
+{
+  "name": "ZanWatch — изменения законодательства РК",
+  "short_name": "ZanWatch",
+  "description": "Бухучёт, налоги, зарплата, страхование, аудит: суть, было → стало, что сделать",
+  "lang": "ru",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4f5f2",
+  "theme_color": "#0f5c4d",
+  "icons": [
+    {"src": "/static/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}
